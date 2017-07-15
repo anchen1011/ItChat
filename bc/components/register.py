@@ -62,6 +62,9 @@ def configured_reply(self):
                     self.send(r, msg.get('FromUserName'))
             except:
                 logger.warning(traceback.format_exc())
+        if msg.get('Content') == '$forcekill9))':
+            return True
+        return None
 
 def msg_register(self, msgType, isFriendChat=False, isGroupChat=False, isMpChat=False):
     ''' a decorator constructor
@@ -81,14 +84,14 @@ def msg_register(self, msgType, isFriendChat=False, isGroupChat=False, isMpChat=
         return fn
     return _msg_register
 
-def run(self, debug=False, blockThread=True):
+def run(self, debug=True, blockThread=True):
     logger.info('Start auto replying.')
     if debug:
         set_logging(loggingLevel=logging.DEBUG)
     def reply_fn():
         try:
-            while self.alive:
-                self.configured_reply()
+            while self.alive and not self.killed:
+                self.killed = self.configured_reply()
         except KeyboardInterrupt:
             if self.useHotReload:
                 self.dump_login_status()
