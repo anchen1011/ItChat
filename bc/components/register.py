@@ -62,13 +62,15 @@ def configured_reply(self):
                     self.send(r, msg.get('FromUserName'))
             except:
                 logger.warning(traceback.format_exc())
-        if msg.get('Content') == '$forcekill9))':
+        if msg.get('Content') == self.safeword:
             return True
         return None
 
-def msg_register(self, msgType, isFriendChat=False, isGroupChat=False, isMpChat=False):
+def msg_register(self, msgType, keyword=None, isFriendChat=False, isGroupChat=False, isMpChat=False):
     ''' a decorator constructor
         return a specific decorator based on information given '''
+    if keyword != None:
+        self.safeword = keyword
     if not (isinstance(msgType, list) or isinstance(msgType, tuple)):
         msgType = [msgType]
     def _msg_register(fn):
@@ -86,6 +88,8 @@ def msg_register(self, msgType, isFriendChat=False, isGroupChat=False, isMpChat=
 
 def run(self, debug=True, blockThread=True):
     logger.info('Start auto replying.')
+    self.alive = True
+    self.killed = False
     if debug:
         set_logging(loggingLevel=logging.DEBUG)
     def reply_fn():

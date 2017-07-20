@@ -17,7 +17,7 @@ class Core(object):
                 - it's 5 now, but actually even 1 is enough
                 - failing is failing
         '''
-        self.alive, self.isLogging, self.killed = False, False, None
+        self.alive, self.isLogging, self.killed, self.safeword = False, False, None, None
         self.storageClass = storage.Storage(self)
         self.memberList = self.storageClass.memberList
         self.mpList = self.storageClass.mpList
